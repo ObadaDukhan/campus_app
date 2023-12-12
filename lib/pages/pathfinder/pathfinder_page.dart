@@ -120,6 +120,19 @@ class RaumfinderPageState extends State<RaumfinderPage>
     waypoints = [];
     final Location location = Location();
 
+    PermissionStatus permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    final serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      return;
+    }
+
     try {
       currentLocation = await location.getLocation();
       setState(() {});
@@ -196,6 +209,7 @@ class RaumfinderPageState extends State<RaumfinderPage>
   @override
   void initState() {
     super.initState();
+
     getLocation();
 
     tileLayer = buildTileLayer();
@@ -298,13 +312,21 @@ class RaumfinderPageState extends State<RaumfinderPage>
                       },
                       onSelected: (String selectedOption) {
                         searchController.text = selectedOption;
+
+                        placeSymbol(selectedOption);
+
+                        getLocation();
+
+                        if (currentLocation == null) return;
+
                         final LatLng startLocation = LatLng(
                           currentLocation!.latitude!,
                           currentLocation!.longitude!,
                         );
+
                         final LatLng endLocation = predefinedLocations[selectedOption]!;
+
                         getShortestPath(startLocation, endLocation);
-                        placeSymbol(selectedOption);
                       },
                       optionsViewBuilder:
                           (BuildContext context, AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
@@ -383,6 +405,10 @@ class RaumfinderPageState extends State<RaumfinderPage>
                                         : null,
                               ),
                           onEditingComplete: () {
+                            placeSymbol(textEditingController.text);
+
+                            if (currentLocation == null) return;
+
                             final LatLng startLocation = LatLng(
                               currentLocation!.latitude!,
                               currentLocation!.longitude!,
@@ -392,7 +418,6 @@ class RaumfinderPageState extends State<RaumfinderPage>
 
                             final LatLng endLocation = predefinedLocations[textEditingController.text]!;
                             getShortestPath(startLocation, endLocation);
-                            placeSymbol(textEditingController.text);
                           },
                           onChanged: (String value) {
                             searchController.text = value;
@@ -408,13 +433,17 @@ class RaumfinderPageState extends State<RaumfinderPage>
                       onTap: () {
                         final String enteredLocation = searchController.text.trim();
                         if (predefinedLocations.containsKey(enteredLocation)) {
+                          placeSymbol(enteredLocation);
+
+                          getLocation();
+                          if (currentLocation == null) return;
+
                           final LatLng startLocation = LatLng(
                             currentLocation!.latitude!,
                             currentLocation!.longitude!,
                           );
                           final LatLng endLocation = predefinedLocations[enteredLocation]!;
                           getShortestPath(startLocation, endLocation);
-                          placeSymbol(searchController.text);
                         } else {
                           debugPrint('Invalid location entered');
                         }
