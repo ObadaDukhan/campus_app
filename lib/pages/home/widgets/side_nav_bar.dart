@@ -51,6 +51,7 @@ class _SideNavBarState extends State<SideNavBar> {
             onTap: () => widget.onSelectedPage(PageItem.events),
             isActive: widget.currentPage == PageItem.events,
           ),
+
           // Mensa
           SideNavBarItem(
             title: 'Mensa',
@@ -58,6 +59,14 @@ class _SideNavBarState extends State<SideNavBar> {
             imagePathInactive: 'assets/img/icons/mensa-outlined.png',
             onTap: () => widget.onSelectedPage(PageItem.mensa),
             isActive: widget.currentPage == PageItem.mensa,
+          ),
+
+          SideNavBarItem(
+            title: 'Karte',
+            imagePathActive: 'assets/img/icons/mensa-filled.png',
+            imagePathInactive: 'assets/img/icons/mensa-outlined.png',
+            onTap: () => widget.onSelectedPage(PageItem.pathfinder),
+            isActive: widget.currentPage == PageItem.pathfinder,
           ),
           // Wallet
           SideNavBarItem(

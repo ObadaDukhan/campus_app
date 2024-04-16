@@ -61,6 +61,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               onTap: () => widget.onSelectedPage(PageItem.events),
               isActive: widget.currentPage == PageItem.events,
             ),
+
             // Mensa
             BottomNavBarItem(
               title: 'Mensa',
@@ -68,6 +69,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
               imagePathInactive: 'assets/img/icons/mensa-outlined.png',
               onTap: () => widget.onSelectedPage(PageItem.mensa),
               isActive: widget.currentPage == PageItem.mensa,
+            ),
+            // Raumfinder
+            BottomNavBarItem(
+              title: 'Karte',
+              imagePathActive: 'assets/img/icons/map-filled.png',
+              imagePathInactive: 'assets/img/icons/map-outlined.png',
+              onTap: () => widget.onSelectedPage(PageItem.pathfinder),
+              isActive: widget.currentPage == PageItem.pathfinder,
             ),
             // Wallet
             BottomNavBarItem(
